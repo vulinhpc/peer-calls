@@ -169,13 +169,13 @@ describe('socket', () => {
 
       expect(rooms['call3'].emit.mock.calls.length).toBe(1);
       expect(rooms['call3'].emit.mock.calls[0][0]).toBe('users');
-      expect(rooms['call3'].emit.mock.calls[0][1].initiator).toBe('/#socket0');
+      expect(rooms['call3'].emit.mock.calls[0][1].initiator).toBe('socket0');
       expect(rooms['call3'].emit.mock.calls[0][1].users).toEqual([{
-        id: '/#socket0'
+        id: 'socket0'
       }, {
-        id: '/#socket1'
+        id: 'socket1'
       }, {
-        id: '/#socket2'
+        id: 'socket2'
       }]);
     });
 
