@@ -15,6 +15,9 @@ app.set('views', path.join(__dirname, '../views'))
 
 app.use('/res', express.static(path.join(__dirname, '../res')))
 app.use('/static', express.static(path.join(__dirname, '../../build')))
+app.use('/fonts', express.static(path.join(
+  __dirname, '../../node_modules/font-awesome/fonts'
+)))
 app.use('/call', require('./routes/call.js'))
 app.use('/', require('./routes/index.js'))
 
