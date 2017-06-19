@@ -13,6 +13,8 @@ export function getUserMedia () {
 getUserMedia.fail = shouldFail => getUserMedia.shouldFail = shouldFail
 getUserMedia.stream = new MediaStream()
 
+export const enumerateDevices = jest.fn().mockReturnValue([])
+
 export const navigator = window.navigator
 
 export const play = jest.fn()

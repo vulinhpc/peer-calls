@@ -11,6 +11,13 @@ export const INIT_PENDING = `${INIT}_PENDING`
 export const INIT_FULFILLED = `${INIT}_FULFILLED`
 export const INIT_REJECTED = `${INIT}_REJECTED`
 
+export const DEVICES = 'DEVICES'
+export const DEVICES_PENDING = `${DEVICES}_PENDING`
+export const DEVICES_FULFILLED = `${DEVICES}_FULFILLED`
+export const DEVICES_REJECTED = `${DEVICES}_REJECTED`
+export const DEVICES_AUDIO_SET = 'DEVICES_AUDIO_SET'
+export const DEVICES_VIDEO_SET = 'DEVICES_VIDEO_SET'
+
 export const ME = '_me_'
 
 export const NOTIFY = 'NOTIFY'

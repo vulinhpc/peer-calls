@@ -1,5 +1,6 @@
 import Promise from 'bluebird'
 import _debug from 'debug'
+import _enumerateDevices from 'enumerate-devices'
 
 const debug = _debug('peercalls')
 
@@ -14,6 +15,8 @@ export function getUserMedia (constraints) {
     getMedia.call(navigator, constraints, resolve, reject)
   })
 }
+
+export const enumerateDevices = _enumerateDevices
 
 export const createObjectURL = object => window.URL.createObjectURL(object)
 export const revokeObjectURL = url => window.URL.revokeObjectURL(url)

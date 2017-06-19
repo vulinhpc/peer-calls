@@ -2,7 +2,11 @@ import * as NotifyActions from './NotifyActions.js'
 import * as SocketActions from './SocketActions.js'
 import * as StreamActions from './StreamActions.js'
 import * as constants from '../constants.js'
-import { callId, getUserMedia } from '../window.js'
+import {
+  callId,
+  enumerateDevices as getDevices,
+  getUserMedia
+} from '../window.js'
 
 export const init = () => dispatch => {
   return dispatch({
@@ -28,3 +32,20 @@ export const getCameraStream = () => dispatch => {
     return null
   })
 }
+
+export const enumerateDevices = () => {
+  return {
+    type: constants.DEVICES,
+    payload: getDevices()
+  }
+}
+
+export const setAudioDevice = deviceId => ({
+  type: constants.DEVICES_AUDIO_SET,
+  payload: { deviceId }
+})
+
+export const setVideoDevice = deviceId => ({
+  type: constants.DEVICES_VIDEO_SET,
+  payload: { deviceId }
+})
