@@ -55,6 +55,9 @@ class SocketHandler {
 
 export function handshake ({ roomName, stream }) {
   return (dispatch, getState) => {
+    dispatch(PeerActions.destroyAllPeers())
+    socket.removeAllListeners()
+
     return connect()
     .then(() => {
       const handler = new SocketHandler({

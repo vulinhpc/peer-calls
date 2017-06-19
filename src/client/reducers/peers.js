@@ -13,7 +13,6 @@ export default function peers (state = defaultState, action) {
     case constants.PEER_REMOVE:
       return _.omit(state, [action.payload.userId])
     case constants.PEERS_DESTROY:
-      _.each(state, peer => peer.destroy())
       return defaultState
     default:
       return state

@@ -120,9 +120,13 @@ export const removePeer = userId => ({
   payload: { userId }
 })
 
-export const destroyPeers = () => ({
-  type: constants.PEERS_DESTROY
-})
+export const destroyAllPeers = () => (dispatch, getState) => {
+  const { peers } = getState()
+  _.each(peers, peer => peer.destroy())
+  dispatch({
+    type: constants.PEERS_DESTROY
+  })
+}
 
 export const sendMessage = message => (dispatch, getState) => {
   message = JSON.stringify({ message })

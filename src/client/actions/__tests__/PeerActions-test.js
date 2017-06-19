@@ -127,7 +127,7 @@ describe('PeerActions', () => {
     })
   })
 
-  describe('destroyPeers', () => {
+  describe('destroyAllPeers', () => {
     it('destroys all peers and removes them', () => {
       store.dispatch(PeerActions.createPeer({
         socket, user: { id: 'user2' }, initiator: 'user2', stream
@@ -136,7 +136,7 @@ describe('PeerActions', () => {
         socket, user: { id: 'user3' }, initiator: 'user3', stream
       }))
 
-      store.dispatch(PeerActions.destroyPeers())
+      store.dispatch(PeerActions.destroyAllPeers())
 
       expect(Peer.instances[0].destroy.mock.calls.length).toEqual(1)
       expect(Peer.instances[1].destroy.mock.calls.length).toEqual(1)

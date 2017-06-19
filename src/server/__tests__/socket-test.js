@@ -67,12 +67,20 @@ describe('server/socket', () => {
     })
 
     describe('ready', () => {
+
       it('should call socket.leave if socket.room', () => {
         socket.room = 'room1'
         socket.emit('ready', 'room2')
 
         expect(socket.leave.mock.calls).toEqual([[ 'room1' ]])
         expect(socket.join.mock.calls).toEqual([[ 'room2' ]])
+      })
+
+      it('should not leave & join when already in room', () => {
+        socket.room = 'room2'
+        socket.emit('ready', 'room2')
+        expect(socket.leave.mock.calls.length).toBe(0)
+        expect(socket.join.mock.calls.length).toBe(0)
       })
 
       it('should call socket.join to room', () => {
@@ -95,6 +103,16 @@ describe('server/socket', () => {
               id: 'socket2'
             }]
           }
+        ]])
+      })
+
+      it('should re-emit users', () => {
+        socket.room = 'room3'
+        socket.emit('ready', 'room3')
+
+        expect(io.to.mock.calls).toEqual([[ 'room3' ]])
+        expect(io.to('room3').emit.mock.calls).toEqual([[
+          'users', jasmine.any(Object)
         ]])
       })
     })

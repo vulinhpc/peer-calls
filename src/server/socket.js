@@ -1,5 +1,5 @@
 'use strict'
-const debug = require('debug')('peer-calls:socket')
+const debug = require('debug')('peercalls')
 const _ = require('underscore')
 
 module.exports = function (socket, io) {
@@ -13,10 +13,11 @@ module.exports = function (socket, io) {
 
   socket.on('ready', roomName => {
     debug('ready: %s, room: %s', socket.id, roomName)
-    if (socket.room) socket.leave(socket.room)
-    socket.room = roomName
-    socket.join(roomName)
-    socket.room = roomName
+    if (socket.room !== roomName) {
+      socket.leave(socket.room)
+      socket.join(roomName)
+      socket.room = roomName
+    }
 
     let users = getUsers(roomName)
     debug('ready: %s, room: %s, users: %o', socket.id, roomName, users)

@@ -38,6 +38,7 @@ export default class App extends React.PureComponent {
     } = this.props
 
     return (<div className="app">
+      <button onClick={this.props.init}>Init</button>
       <Alerts alerts={alerts} dismiss={dismissAlert} />
       <Notifications notifications={notifications} />
       <Input notify={notify} sendMessage={sendMessage} />
