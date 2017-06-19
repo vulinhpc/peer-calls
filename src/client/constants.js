@@ -28,6 +28,8 @@ export const PEER_EVENT_SIGNAL = 'signal'
 export const PEER_EVENT_STREAM = 'stream'
 export const PEER_EVENT_DATA = 'data'
 
+export const SOCKET_CONNECT = 'connect'
+export const SOCKET_DISCONNECT = 'disconnect'
 export const SOCKET_EVENT_SIGNAL = 'signal'
 export const SOCKET_EVENT_USERS = 'users'
 

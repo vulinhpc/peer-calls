@@ -21,12 +21,10 @@ class PeerHandler {
     dispatch(NotifyActions.error('A peer connection error occurred'))
     const peer = getState().peers[user.id]
     peer && peer.destroy()
-    dispatch(removePeer(user.id))
   }
   handleSignal = signal => {
     const { socket, user } = this
     debug('peer: %s, signal: %o', user.id, signal)
-
     const payload = { userId: user.id, signal }
     socket.emit('signal', payload)
   }
@@ -92,6 +90,7 @@ export function createPeer ({ socket, user, initiator, stream }) {
       },
       stream
     })
+    peer.id = userId
 
     const handler = new PeerHandler({
       socket,

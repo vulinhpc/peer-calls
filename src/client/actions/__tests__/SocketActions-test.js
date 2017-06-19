@@ -1,35 +1,74 @@
 jest.mock('simple-peer')
 jest.mock('../../window.js')
+jest.mock('../../socket.js')
 
 import * as SocketActions from '../SocketActions.js'
 import * as constants from '../../constants.js'
 import Peer from 'simple-peer'
-import { EventEmitter } from 'events'
+import socket from '../../socket.js'
 import { createStore } from '../../store.js'
 
 describe('SocketActions', () => {
   const roomName = 'bla'
 
-  let socket, store
+  let store
   beforeEach(() => {
-    socket = new EventEmitter()
     socket.id = 'a'
+    socket.connected = true
 
     store = createStore()
 
     Peer.instances = []
   })
 
+  afterEach(() => {
+    socket.removeAllListeners()
+  })
+
+  const getLastNotification = (index = 1) => {
+    const { notifications } = store.getState()
+    const keys = Object.keys(notifications)
+    return notifications[keys[keys.length - index]]
+  }
+
   describe('handshake', () => {
+    describe('connect', () => {
+      it('dispatches connected notification when already connected', () => {
+        return store.dispatch(SocketActions.handshake({ socket, roomName }))
+        .then(() => {
+          const notification = getLastNotification(2)
+          expect(notification && notification.message)
+          .toEqual('Connected to server socket')
+        })
+      })
+
+      it('waits for connected event when not connected', done => {
+        socket.connected = false
+        store.dispatch(SocketActions.handshake({ socket, roomName }))
+        .then(() => {
+          const notification = getLastNotification(2)
+          expect(notification && notification.message)
+          .toEqual('Connected to server socket')
+        })
+        .then(done)
+        .catch(done.fail)
+
+        socket.connected = true
+        socket.emit(constants.SOCKET_CONNECT)
+      })
+    })
+
     describe('users', () => {
       beforeEach(() => {
-        store.dispatch(SocketActions.handshake({ socket, roomName }))
-        const payload = {
-          users: [{ id: 'a' }, { id: 'b' }],
-          initiator: 'a'
-        }
-        socket.emit('users', payload)
-        expect(Peer.instances.length).toBe(1)
+        return store.dispatch(SocketActions.handshake({ socket, roomName }))
+        .then(() => {
+          const payload = {
+            users: [{ id: 'a' }, { id: 'b' }],
+            initiator: 'a'
+          }
+          socket.emit('users', payload)
+          expect(Peer.instances.length).toBe(1)
+        })
       })
 
       it('adds a peer for each new user and destroys peers for missing', () => {
@@ -50,10 +89,12 @@ describe('SocketActions', () => {
       let data
       beforeEach(() => {
         data = {}
-        store.dispatch(SocketActions.handshake({ socket, roomName }))
-        socket.emit('users', {
-          initiator: 'a',
-          users: [{ id: 'a' }, { id: 'b' }]
+        return store.dispatch(SocketActions.handshake({ socket, roomName }))
+        .then(() => {
+          socket.emit('users', {
+            initiator: 'a',
+            users: [{ id: 'a' }, { id: 'b' }]
+          })
         })
       })
 
@@ -85,22 +126,33 @@ describe('SocketActions', () => {
       let ready = false
       socket.once('ready', () => { ready = true })
 
-      store.dispatch(SocketActions.handshake({ socket, roomName }))
+      return store.dispatch(SocketActions.handshake({ socket, roomName }))
+      .then(() => {
+        socket.emit('users', {
+          initiator: 'a',
+          users: [{ id: 'a' }, { id: 'b' }]
+        })
+        expect(Peer.instances.length).toBe(1)
+        peer = Peer.instances[0]
 
-      socket.emit('users', {
-        initiator: 'a',
-        users: [{ id: 'a' }, { id: 'b' }]
+        expect(ready).toBeDefined()
       })
-      expect(Peer.instances.length).toBe(1)
-      peer = Peer.instances[0]
-
-      expect(ready).toBeDefined()
     })
 
     describe('error', () => {
       it('destroys peer', () => {
         peer.emit(constants.PEER_EVENT_ERROR, new Error('bla'))
         expect(peer.destroy.mock.calls.length).toBe(1)
+      })
+    })
+
+    describe('disconnect', () => {
+      it('dispatches notification', () => {
+        socket.emit(constants.SOCKET_DISCONNECT)
+        const notification = getLastNotification()
+        expect(notification && notification.message).toEqual(
+          'Server socket disconnected'
+        )
       })
     })
 
