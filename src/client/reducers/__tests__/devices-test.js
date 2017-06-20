@@ -33,25 +33,26 @@ describe('reducers/devices', () => {
       it('groups devices by type', () => {
         const { devices } = store.getState()
         expect(devices.available).toEqual({
-          audioinput: [{
-            deviceId: 'one',
-            type: 'audioinput'
-          }, {
-            deviceId: 'two',
-            type: 'audioinput'
-          }],
-          videoinput: [{
-            deviceId: 'three',
-            type: 'videoinput'
-          }]
+          audioinput: {
+            one: {
+              deviceId: 'one',
+              type: 'audioinput'
+            },
+            two: {
+              deviceId: 'two',
+              type: 'audioinput'
+            }
+          },
+          videoinput: {
+            three: {
+              deviceId: 'three',
+              type: 'videoinput'
+            }
+          }
         })
         expect(devices.constraints).toEqual({
-          audio: {
-            deviceId: 'one'
-          },
-          video: {
-            deviceId: 'three'
-          }
+          audio: true,
+          video: true
         })
       })
     })
@@ -65,12 +66,8 @@ describe('reducers/devices', () => {
         expect(devices.available).not.toBe(initialDevices.available)
         expect(devices.available).toEqual(initialDevices.available)
         expect(devices.constraints).toEqual({
-          audio: {
-            deviceId: 'default'
-          },
-          video: {
-            deviceId: 'default'
-          }
+          audio: true,
+          video: true
         })
       })
     })
@@ -99,10 +96,15 @@ describe('reducers/devices', () => {
         deviceId: 'test123'
       })
     })
-    it('sets audio to false when no value', () => {
-      store.dispatch(CallActions.setAudioDevice(null))
+    it('sets audio to false when "false"', () => {
+      store.dispatch(CallActions.setAudioDevice("false"))
       const { devices } = store.getState()
       expect(devices.constraints.audio).toBe(false)
+    })
+    it('sets audio to true when "true"', () => {
+      store.dispatch(CallActions.setAudioDevice("true"))
+      const { devices } = store.getState()
+      expect(devices.constraints.audio).toBe(true)
     })
   })
 
@@ -114,10 +116,15 @@ describe('reducers/devices', () => {
         deviceId: 'test123'
       })
     })
-    it('sets video to false when no value', () => {
-      store.dispatch(CallActions.setVideoDevice(null))
+    it('sets video to false when "false"', () => {
+      store.dispatch(CallActions.setVideoDevice('false'))
       const { devices } = store.getState()
       expect(devices.constraints.video).toBe(false)
+    })
+    it('sets video to true when "true"', () => {
+      store.dispatch(CallActions.setVideoDevice('true'))
+      const { devices } = store.getState()
+      expect(devices.constraints.video).toBe(true)
     })
   })
 

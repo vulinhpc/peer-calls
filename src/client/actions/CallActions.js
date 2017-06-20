@@ -42,10 +42,10 @@ export const enumerateDevices = () => {
 
 export const setAudioDevice = deviceId => ({
   type: constants.DEVICES_AUDIO_SET,
-  payload: { deviceId }
+  payload: deviceId
 })
 
 export const setVideoDevice = deviceId => ({
   type: constants.DEVICES_VIDEO_SET,
-  payload: { deviceId }
+  payload: deviceId
 })
