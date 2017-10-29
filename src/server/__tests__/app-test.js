@@ -1,3 +1,4 @@
+jest.mock('../server.js')
 jest.mock('socket.io', () => {
   const { EventEmitter } = require('events')
   return jest.fn().mockReturnValue(new EventEmitter())

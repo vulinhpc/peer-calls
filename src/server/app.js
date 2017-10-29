@@ -6,6 +6,7 @@ const express = require('express')
 const handleSocket = require('./socket.js')
 const path = require('path')
 const { createServer } = require('./server.js')
+const { version } = require('./version.js')
 
 const BASE_URL = config.get('baseUrl')
 const SOCKET_URL = `${BASE_URL}/ws`
@@ -16,8 +17,7 @@ const app = express()
 const server = createServer(config, app)
 const io = require('socket.io')(server, { path: SOCKET_URL })
 
-app.locals.version = require('../../package.json').version
-app.locals.baseUrl = BASE_URL
+app.locals = { version, baseUrl: BASE_URL }
 
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, '../views'))
